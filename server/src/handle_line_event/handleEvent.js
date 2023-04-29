@@ -23,7 +23,8 @@ const handleEvent = async(event) => {
                         await Conversation.create(
                             {
                                 userId: userId,
-                                userName: displayName
+                                userName: displayName,
+                                mainTherapist: 'is_not_set'
                             }
                         );
                         console.log('added to database');
