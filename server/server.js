@@ -1,27 +1,20 @@
 const express = require('express');
-const line = require('@line/bot-sdk');
+const bodyParser = require('body-parser');
+const cors = require('cors');
 const dotenv = require('dotenv');
 dotenv.config();
 const connectDB = require("./src/db/connect.js").connectDB;
-// const Conversation = require("./src/db/schema.js").Conversation;
-const handleEvent = require("./src/handle_line_event/handleEvent.js").handleEvent;
-const config = require("./src/config/config.js").config;
+const lineRouter = require("./src/routes/lineRoute.js").lineRouter;
+const apiRouter = require("./src/routes/api.js").apiRouter;
+
 const PORT = process.env.PORT || 8000;
 
+// 以下の順番は変更不可
 const app = express();
-app.get('/', (req, res) => res.send('Hello LINE BOT! (HTTP GET)'));
-app.post('/webhook', line.middleware(config), (req, res) => {
-
-  if (req.body.events.length === 0) {
-    res.send('Hello LINE BOT! (HTTP POST)');
-    console.log('検証イベントを受信しました！');
-    return;
-  } else {
-    console.log('受信しました:', req.body.events);
-  }
-
-  Promise.all(req.body.events.map(handleEvent)).then((result) => res.json(result));
-});
+app.use(cors())
+app.use('/line', lineRouter);
+app.use(bodyParser.json());
+app.use('/api/v1', apiRouter)
 
 const main = async () => {
   const url = process.env.MONGODB_URL;

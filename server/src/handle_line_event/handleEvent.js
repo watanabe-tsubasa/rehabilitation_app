@@ -47,7 +47,7 @@ const handleEvent = async(event) => {
             // 患者さんからのメッセージはデータベースに保存
             await Conversation.findOneAndUpdate(
                 {userId: userId},
-                {sendMessage:[...res.sendMessage, event.message.text]})
+                {replyMessage:[...res.replyMessage, event.message.text]})
             return client.replyMessage(event.replyToken, {
                 type: 'text', // テキストメッセージ
                 text: '担当理学療法士にメッセージを送りました。'
